@@ -1,0 +1,38 @@
+{% extends 'myblog/base.html' %}
+
+{% block content %}
+
+<!-- Page Header -->
+{% include 'myblog/page_header.html' with header_img_url="/static/img/contact-bg.jpg" header_title="联系我" header_subtitle="这只是测试." %}
+
+<!-- Main Content -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+            <p>这只是测试页面哦，发了也不会回你!</p>
+            <form method="post">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="control-group">
+                        <div class="form-group floating-label-form-group controls">
+                            <label>{{ field.label }}</label>
+                            {{ field }}
+                            {% for error in field.errors %}
+                                <p class="help-block text-danger">{{ error|escape }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+                <br>
+                <div id="success"></div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary" id="sendMessageButton">Send</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<hr>
+
+{% endblock %}

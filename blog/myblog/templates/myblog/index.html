@@ -1,0 +1,98 @@
+{% extends 'myblog/base.html' %}
+
+{% block content %}
+
+<!-- Page Header -->
+{% if category %}
+    {% include 'myblog/page_header.html' with header_img_url=category.header_image.url header_title=category.title header_subtitle=category.tag_line %}
+{% else %}
+    {% include 'myblog/page_header.html' with header_img_url="/static/img/home-bg.jpg" header_title="骄阳" header_subtitle="欢迎到此一游!" %}
+{% endif %}
+
+<!-- Main Content -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+            {% for post in posts %}
+                <div class="post-preview">
+                    <a href="{{ post.get_absolute_url }}">
+                        <h2 class="post-title">
+                            {{ post.title }}
+                        </h2>
+                        <h3 class="post-subtitle">
+                            {{ post.subtitle }}
+                        </h3>
+                    </a>
+                    <p class="post-meta">
+                        {% if post.categories.all|length == 1 %}
+                            分类:
+                        {% else %}
+                            Categories:
+                        {% endif %}
+                        {% for category in post.categories.all %}
+                            <a href="{% url 'home_with_category_url' slug=category.slug %}">
+                                {{category.title}}
+                            </a>
+                        {% endfor %}
+                    </p>
+                    <div>
+                        {{ post.formatted_markdown|safe|truncatechars:"200" }}
+                    </div>
+                    <p class="post-meta">
+                        <a href="{{ post.get_absolute_url }}">See In Detail</a>
+                    </p>
+                    <!--
+                    <p class="post-meta">
+                        Posted by <a href="{% url 'about_me_url' %}">Gunduz Huseyn Lee</a> on {{ post.date_published }}
+                    </p>
+                    -->
+                </div>
+                <hr>
+            {% endfor %}
+
+            {% if is_paginated %}
+
+                <nav aria-label="Pagination">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">&laquo;</span>
+                            </li>
+                        {% endif %}
+                        {% for i in paginator.page_range %}
+                            {% if page_obj.number == i %}
+                                <li class="page-item active">
+                                    <span class="page-link">
+                                        {{ i }}
+                                        <span class="sr-only">(current)</span>
+                                    </span>
+                                </li>
+                            {% else %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">&raquo;</span>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<hr>
+
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends 'myblog/base.html' %}
+
+
+{% block content %}
+    {% if post.is_published or user.is_superuser %}
+        <!-- Page Header -->
+        <!-- Set your background image for this header on the line below. -->
+        <header class="masthead" style="background-image: url('{{ post.header_image.url }}')">
+            <div class="overlay"></div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-md-10 mx-auto">
+                        <div class="post-heading">
+                            <h1>{{ post.title }}</h1>
+                            <h2 class="subheading">{{ post.subtitle }}</h2>
+                            <span class="meta">
+                                Posted by
+                                <a href="{% url 'about_me_url' %}">骄阳</a>
+                                on {{ post.date_published }}
+                            </span>
+                            <span class="meta">
+                                {% if post.categories.all|length == 1 %}
+                                    Category:
+                                {% else %}
+                                    Categories:
+                                {% endif %}
+                                {% for category in post.categories.all %}
+                                    <a href="{% url 'home_with_category_url' slug=category.slug %}">
+                                        {{category.title}}
+                                    </a>
+                                {% endfor %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Post Content -->
+        <article>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-8 col-md-10 mx-auto">
+                        {{ post.formatted_markdown|safe }}
+                    </div>
+                </div>
+            </div>
+        </article>
+
+{#        {% include 'myblog/post_comments.html' %}#}
+    {% else %}
+        <!-- Page Header -->
+        <!-- Set your background image for this header on the line below. -->
+        <header class="masthead" style="background-image: url('/static/img/post-coming-soon.jpg')">
+            <div class="overlay"></div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-8 col-md-10 mx-auto">
+                        <div class="post-heading">
+                            <h1>This post is coming soon!</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+    {% endif %}
+    <hr>
+
+{% endblock %}
